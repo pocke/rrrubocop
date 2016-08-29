@@ -1,3 +1,3 @@
-module Rrrubocop
+module RRRuboCop
   VERSION = "0.1.0"
 end

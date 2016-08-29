@@ -1,5 +1,8 @@
+require 'rubocop'
+
 require "rrrubocop/version"
 
-module Rrrubocop
-  # Your code goes here...
+
+module RRRuboCop
+
 end
