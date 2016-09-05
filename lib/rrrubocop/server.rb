@@ -5,10 +5,11 @@ require 'rbconfig'
 
 module RRRuboCop
   class Server
+
     Request = Struct.new("Request", :id, :body)
 
-    # TODO: get file paths
-    def run
+    # @param paths [Array<String>] target file paths
+    def run(paths)
       port = start_server(req_ch, resp_ch)
       start_workers(port)
       resp.ch.wait
