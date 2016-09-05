@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'rrrubocop'
+require 'rrrubocop/worker'
+
+RRRuboCop::Worker.new.run

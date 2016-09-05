@@ -2,7 +2,7 @@ require 'socket'
 require 'json'
 
 module RRRuboCop
-  class Client
+  class Worker
     EndOfFiles = Class.new(StandardError)
 
     # @param args [Array<String>] command line arguments

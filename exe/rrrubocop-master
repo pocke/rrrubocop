@@ -1,0 +1,6 @@
+#!ruby
+
+require 'rrrubocop'
+require 'rrrubocop/master'
+
+RRRuboCop::Master.new.run

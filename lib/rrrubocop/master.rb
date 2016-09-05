@@ -4,7 +4,7 @@ require 'socket'
 require 'rbconfig'
 
 module RRRuboCop
-  class Server
+  class Master
 
     Request = Struct.new("Request", :id, :body)
 

@@ -1,6 +1,0 @@
-#!ruby
-
-require 'rrrubocop'
-require 'rrrubocop/server'
-
-RRRuboCop::Server.new.run
