@@ -8,7 +8,6 @@ module RRRuboCop
 
     Request = Struct.new("Request", :id, :body)
 
-    # @param paths [Array<String>] target file paths
     def run(paths)
       port = start_server(req_ch, resp_ch)
       start_workers(port)
