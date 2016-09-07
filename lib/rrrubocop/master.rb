@@ -3,13 +3,18 @@ require 'json'
 require 'socket'
 require 'rbconfig'
 
+require 'rrrubocop/master/pipe'
+
 module RRRuboCop
   class Master
 
     Request = Struct.new("Request", :id, :body)
 
+    # @param paths [Array<String>] analyse target path
     def run(paths)
-      port = start_server(req_ch, resp_ch)
+      pipe = Pipe.new(paths)
+
+      port = start_server(pipe)
       start_workers(port)
       resp.ch.wait
     end
@@ -22,25 +27,27 @@ module RRRuboCop
     end
 
 
-    # @param req_ch [Thread::Queue<RRRuboCop::Server::Request>]
-    # @param resp_ch [Thread::Queue<RRRuboCop::Server::Response>]
+    # TODO: split as a new class
+    # @param pipe [Pipe] pipe for request and response
     # @return [Integer] TCP port number
-    def start_server(req_ch, resp_ch)
+    def start_server(pipe)
       server = TCPServer.new(0)
 
       Thread.new do
         loop do
-          client = server.accept
-          req = req_ch.pop
-          break unless req # queue is closed
+          Thread.new(server.accept) do |client|
+            req = pipe.deq_request
+            break unless req # queue is closed # XXX: is it ok?
 
-          client.puts JSON.parse(req.body)
-          client.flush
-          resp_raw = JSON.parse(client.read)
-          resp = Response.new(resp_raw)
-          resp.id = req.id
-          resp_ch.push resp
-          client.close
+            client.puts JSON.parse(req.body)
+            client.flush
+            resp_raw = JSON.parse(client.read)
+            resp = Response.new(resp_raw)
+            resp.id = req.id
+            # XXX: when crash, should enqueue an error?
+            resp_ch.enq_response resp
+            client.close
+          end
         end
       end
 
