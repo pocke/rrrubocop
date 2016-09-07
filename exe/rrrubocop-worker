@@ -3,4 +3,4 @@
 require 'rrrubocop'
 require 'rrrubocop/worker'
 
-RRRuboCop::Worker.new.run
+RRRuboCop::Worker::CLI.new.run
