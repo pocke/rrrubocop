@@ -24,7 +24,7 @@ module RRRuboCop
       private
 
       def client_path
-        File.join(RRRuboCop::RootDir, 'exe', 'rrrubocop-client')
+        File.join(RRRuboCop::RootDir, 'exe', 'rrrubocop-worker')
       end
 
 

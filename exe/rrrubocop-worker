@@ -3,4 +3,5 @@
 require 'rrrubocop'
 require 'rrrubocop/worker'
 
-RRRuboCop::Worker::CLI.new.run
+cli = RRRuboCop::Worker::CLI.new(ARGV)
+cli.work_loop
