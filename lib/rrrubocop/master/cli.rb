@@ -1,7 +1,7 @@
 module RRRuboCop
   module Master
     class CLI
-      Request = Struct.new("Request", :id, :body)
+      Request = Struct.new('Request', :id, :body)
 
       # @param arguments [Array<String>] command line arguments
       def initialize(arguments)
@@ -13,7 +13,8 @@ module RRRuboCop
 
       # @param paths [Array<String>] analyse target path
       def run
-        pipe = Pipe.new(@paths)
+        reqs = @paths.map.with_index{|path, id| Request.new(id, [path])}
+        pipe = Pipe.new(reqs)
 
         port = start_server(pipe)
         start_workers(port)
@@ -37,17 +38,23 @@ module RRRuboCop
         Thread.new do
           loop do
             Thread.new(server.accept) do |client|
-              req = pipe.deq_request
-              break unless req # queue is closed # XXX: is it ok?
+              begin
+                req = pipe.deq_request
+                break unless req # queue is closed # XXX: is it ok?
 
-              client.puts JSON.parse(req.body)
-              client.flush
-              resp_raw = JSON.parse(client.read)
-              resp = Response.new(resp_raw)
-              resp.id = req.id
-              # XXX: when crash, should enqueue an error?
-              resp_ch.enq_response resp
-              client.close
+                client.puts JSON.generate(req.body)
+                client.flush
+                resp_raw = JSON.parse(client.read)
+                resp = Response.new(resp_raw)
+                resp.id = req.id
+                # XXX: when crash, should enqueue an error?
+                resp_ch.enq_response resp
+                client.close
+              rescue => ex
+                warn ex.inspect
+                warn ex.backtrace
+                raise ex
+              end
             end
           end
         end

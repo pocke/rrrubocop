@@ -12,24 +12,18 @@ module RRRuboCop
       end
 
       def run
-        args = fetch_cli_args
+        args = fetch
         cli = RuboCop::CLI.new
         cli.run(args)
       end
 
       private
 
-      def fetch_cli_args
-        resp = fetch
-        resp['arguments']
-      end
-
       def fetch
         # https://github.com/pocke/rrrubocop/issues/1
         s = TCPSocket.open(@host, @port)
         raw_data = s.gets
         data = JSON.parse(raw_data)
-        raise RRRuboCop::Worker::EndOfFiles, data['error'] if data['error']
         return data
       ensure
         s.close
