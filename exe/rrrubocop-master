@@ -1,6 +1,7 @@
-#!ruby
+#!/usr/bin/env ruby
 
 require 'rrrubocop'
 require 'rrrubocop/master'
 
-RRRuboCop::Master.new.run
+cli = RRRuboCop::Master::CLI.new(ARGV)
+cli.run

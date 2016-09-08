@@ -1,5 +1,3 @@
-require 'thread'
-
 module RRRuboCop
   module Master
     class Pipe
@@ -12,8 +10,7 @@ module RRRuboCop
           @req_queue.push req
         end
 
-        # XXX: check to work
-        @latch = Concurrent::CountDonwLatch.new(requests.size)
+        @latch = Concurrent::CountDownLatch.new(requests.size)
       end
 
       # XXX: Error handling when queue is empty
