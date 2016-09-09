@@ -14,7 +14,7 @@ module RRRuboCop
 
       # @param paths [Array<String>] analyse target path
       def run
-        reqs = @paths.map.with_index{|path, id| Request.new(id, [path])}
+        reqs = @paths.each_slice(5).map.with_index{|paths, id| Request.new(id, paths + %w[--cache false])}
         pipe = Pipe.new(reqs)
 
         port = start_server(pipe)
