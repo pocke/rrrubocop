@@ -28,7 +28,7 @@ module RRRuboCop
       # @param resp [Response]
       def enq_response(resp)
         @resp_queue.push resp
-        @latch.down # is it correct method name?
+        @latch.count_down
       end
 
       def wait_enqueueing
