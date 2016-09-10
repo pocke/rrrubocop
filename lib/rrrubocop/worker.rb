@@ -9,3 +9,4 @@ end
 
 require 'rrrubocop/worker/cli'
 require 'rrrubocop/worker/runner'
+require 'rrrubocop/worker/formatter'

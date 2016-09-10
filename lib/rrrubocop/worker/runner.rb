@@ -20,7 +20,7 @@ module RRRuboCop
         cli = RuboCop::CLI.new
         # TODO: get result
         cli.run(args)
-        s.puts JSON.generate([])
+        s.puts JSON.generate(Formatter.buffer)
       ensure
         s.close if s
       end
