@@ -20,17 +20,21 @@ module RRRuboCop
 
       # @return [Response]
       def deq_response
+        p 'dequeueing'
         @resp_queue.deq
+      ensure
+        @latch.count_down
       end
 
       # @param resp [Response]
       def enq_response(resp)
+        p 'enqueueing'
         @resp_queue.push resp
-        @latch.count_down
       end
 
       def wait_enqueueing
         @latch.wait
+        @resp_queue.close
       end
     end
   end

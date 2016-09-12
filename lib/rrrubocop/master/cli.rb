@@ -4,7 +4,6 @@ module RRRuboCop
       Request = Struct.new('Request', :id, :body)
       class Response < Struct.new('Response', :id, :body)
         def initialize(raw_body, id)
-          p raw_body
           body = JSON.parse(raw_body)
           super(id, body)
         end
@@ -25,11 +24,8 @@ module RRRuboCop
 
         port = start_server(pipe)
         start_workers(port)
-        pipe.wait_enqueueing
-        loop do
-          resp = pipe.deq_response
-          p resp
-        end
+        display = Display.new(pipe, $stdout)
+        display.wait
       end
 
 

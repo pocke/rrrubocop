@@ -13,3 +13,4 @@ end
 
 require 'rrrubocop/master/pipe'
 require 'rrrubocop/master/cli'
+require 'rrrubocop/master/display'
