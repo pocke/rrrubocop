@@ -13,10 +13,9 @@ module RRRuboCop
         @latch = Concurrent::CountDownLatch.new(requests.size)
       end
 
-      # XXX: Error handling when queue is empty
       # @return [Request]
       def deq_request
-        @req_queue.deq
+        @req_queue.deq(true)
       end
 
       # XXX: Error handling when queue is empty

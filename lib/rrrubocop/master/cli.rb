@@ -40,8 +40,12 @@ module RRRuboCop
           loop do
             Thread.new(server.accept) do |client|
               begin
-                req = pipe.deq_request
-                break unless req # queue is closed # XXX: is it ok?
+                begin
+                  req = pipe.deq_request
+                rescue ThreadError # queue is empty
+                  client.close
+                  next
+                end
 
                 client.puts JSON.generate(req.body)
                 client.flush

@@ -15,12 +15,17 @@ module RRRuboCop
       def run
         s = TCPSocket.open(@host, @port)
         raw_data = s.gets
+        raise RRRuboCop::Worker::EndOfFiles unless raw_data # when server is closed
         args = JSON.parse(raw_data)
 
         cli = RuboCop::CLI.new
-        # TODO: get result
         cli.run(args)
         s.puts JSON.generate(Formatter.buffer)
+      rescue RRRuboCop::Worker::EndOfFiles
+        raise
+      rescue => ex
+        p ex
+        raise
       ensure
         s.close if s
       end
