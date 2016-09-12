@@ -16,7 +16,7 @@ module RRRuboCop
         s = TCPSocket.open(@host, @port)
         raw_data = s.gets
         raise RRRuboCop::Worker::EndOfFiles unless raw_data # when server is closed
-        args = JSON.parse(raw_data)
+        args = JSON.parse(raw_data) + ['--format', 'RRRuboCop::Worker::Formatter']
 
         cli = RuboCop::CLI.new
         cli.run(args)

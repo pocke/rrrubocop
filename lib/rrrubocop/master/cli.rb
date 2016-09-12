@@ -2,7 +2,13 @@ module RRRuboCop
   module Master
     class CLI
       Request = Struct.new('Request', :id, :body)
-      Response = Struct.new('Response', :id) # TODO: fields, initializer
+      class Response < Struct.new('Response', :id, :body)
+        def initialize(raw_body, id)
+          p raw_body
+          body = JSON.parse(raw_body)
+          super(id, body)
+        end
+      end
 
       # @param arguments [Array<String>] command line arguments
       def initialize(arguments)
@@ -20,6 +26,10 @@ module RRRuboCop
         port = start_server(pipe)
         start_workers(port)
         pipe.wait_enqueueing
+        loop do
+          resp = pipe.deq_response
+          p resp
+        end
       end
 
 
@@ -49,8 +59,7 @@ module RRRuboCop
 
                 client.puts JSON.generate(req.body)
                 client.flush
-                resp_raw = JSON.parse(client.read)
-                resp = Response.new(resp_raw)
+                resp = Response.new(client.read, req.id)
                 resp.id = req.id
                 # XXX: when crash, should enqueue an error?
                 pipe.enq_response resp

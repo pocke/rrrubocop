@@ -18,7 +18,6 @@ module RRRuboCop
         @req_queue.deq(true)
       end
 
-      # XXX: Error handling when queue is empty
       # @return [Response]
       def deq_response
         @resp_queue.deq
